@@ -14,7 +14,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @if (app()->environment('production'))
+        <link rel="stylesheet" href="{{ asset('build/assets/app-DH5eT-FY.css') }}">
+        <script type="module" src="{{ asset('build/assets/app-T1DpEqax.js') }}"></script>
+    @else
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endif
     @livewireStyles
 </head>
 
