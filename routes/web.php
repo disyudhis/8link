@@ -2,6 +2,7 @@
 
 use App\Livewire\Home;
 use App\Livewire\PaketPengerjaan;
+use App\Livewire\Reservasi;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -20,4 +21,5 @@ Route::middleware([
 ])->group(function () {
     Route::get('/', Home::class)->name('home');
     Route::get('/paket-pengerjaan', PaketPengerjaan::class)->name('paket-pengerjaan');
+    Route::get('/reservasi', Reservasi::class)->name('reservasi');
 });

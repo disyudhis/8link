@@ -1,10 +1,4 @@
-<div class="min-h-screen bg-gray-100">
-    <!-- Header -->
-    <div class="bg-primary text-black p-4">
-        <h1 class="text-xl font-semibold">Home</h1>
-        <p class="text-sm opacity-90">Hi Teman! Selamat datang di Wash Anda</p>
-    </div>
-
+<div>
     <!-- Main Content -->
     <div class="px-4 py-6 space-y-4">
         <!-- Checklist Kendaraan -->

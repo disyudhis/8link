@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('paket_pengerjaans', function (Blueprint $table) {
+        Schema::create('car_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->string('start_price')->nullable();
-            $table->string('end_price')->nullable();
-            $table->enum('sizes', ['SUV', 'SEDAN', 'HATCH'])->nullable();
+            $table->string('description')->nullable();
+            $table->enum('code', ['S', 'M', 'L', 'XL'])->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('paket_pengerjaans');
+        Schema::dropIfExists('car_categories');
     }
 };

@@ -66,7 +66,7 @@ class RegisterForm extends Component
 
         Auth::login($user);
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended(route('home'));
     }
 
     public function render()

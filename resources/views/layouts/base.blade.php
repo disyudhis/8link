@@ -24,9 +24,30 @@
 </head>
 
 <body class="font-sans antialiased bg-gray-100">
-    <div class="min-h-screen">
-        {{ $slot }}
-    </div>
+    <header class="fixed top-0 left-0 right-0 z-40 bg-white shadow-md">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-black rounded-full flex items-center justify-center">
+                            <img src="{{ asset('icon/8link yellow (no bg).png') }}" alt="">
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-hidden pt-16 pb-20">
+        <!-- Scrollable Container -->
+        <div class="h-full overflow-y-auto px-4 py-6">
+            <!-- Content -->
+            <div class="container mx-auto">
+                {{ $slot }}
+            </div>
+        </div>
+    </main>
 
     @if (isset($bottomNavigation))
         <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
