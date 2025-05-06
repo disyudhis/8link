@@ -3,9 +3,11 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Models\Bookings;
 use App\Models\CarCategories;
 use App\Models\PackagePrices;
 use App\Models\ServicePackages;
+use Illuminate\Support\Facades\Auth;
 
 class PaketPengerjaan extends Component
 {
@@ -17,6 +19,7 @@ class PaketPengerjaan extends Component
     public $sortBy = 'name';
     public $sortDirection = 'asc';
     public $filterActive = false;
+    public $selectedPackagePrice = null;
 
     public $vehicleData = [
         'car_name' => '',
@@ -28,6 +31,7 @@ class PaketPengerjaan extends Component
         'notes' => '',
         'service_package_id' => '',
         'package_price' => '',
+        'package_price_id' => '', // Added field to store the package_price_id
     ];
 
     protected $rules = [
@@ -141,6 +145,8 @@ class PaketPengerjaan extends Component
 
                 if ($price) {
                     $this->vehicleData['package_price'] = $price->price;
+                    $this->vehicleData['package_price_id'] = $price->id; // Store the package_price_id
+                    $this->selectedPackagePrice = $price;
                 }
             }
         }
@@ -151,11 +157,37 @@ class PaketPengerjaan extends Component
         // Validasi semua data
         $this->validate();
 
-        // Save to session for checkout
-        session(['vehicle_booking_data' => $this->vehicleData]);
+        try {
+            // Save booking to database
+            $booking = Bookings::create([
+                'customer_id' => Auth::id(), // Assuming customer is logged in
+                'package_price_id' => $this->vehicleData['package_price_id'],
+                'license_plate' => $this->vehicleData['plate_number'],
+                'car_name' => $this->vehicleData['car_name'],
+                'car_color' => $this->vehicleData['car_color'],
+                'booking_date' => $this->vehicleData['service_date'],
+                'status' => 'pending', // Default status for new bookings
+                'total_price' => $this->vehicleData['package_price'],
+                'notes' => $this->vehicleData['notes'] ?? null,
+            ]);
 
-        // Redirect to confirmation/checkout page
-        return redirect()->route('reservasi');
+            // Store booking ID in session
+            session(['booking_id' => $booking->id]);
+            session(['vehicle_booking_data' => $this->vehicleData]);
+
+            // Show success message
+            session()->flash('message', 'Reservasi berhasil dibuat!');
+
+            // Redirect to confirmation/checkout page
+            return redirect()->route('reservasi');
+
+        } catch (\Exception $e) {
+            // Log error
+            \Log::error('Booking creation failed: ' . $e->getMessage());
+
+            // Show error message
+            session()->flash('error', 'Terjadi kesalahan saat menyimpan data reservasi. Silakan coba lagi.');
+        }
     }
 
     public function render()
