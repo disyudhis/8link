@@ -38,7 +38,7 @@
                     </div>
 
                     <button type="submit"
-                        class="w-full py-2 px-4 bg-primary hover:bg-secondary text-white font-semibold rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 uppercase">
+                        class="w-full py-2 px-4 bg-primary hover:bg-secondary text-black font-semibold rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 uppercase">
                         Daftar Sekarang
                     </button>
                 </form>
@@ -79,7 +79,7 @@
                     </div>
 
                     <button type="submit"
-                        class="w-full py-2 px-4 bg-primary hover:bg-secondary text-white font-semibold rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 uppercase">
+                        class="w-full py-2 px-4 bg-primary hover:bg-secondary text-black font-semibold rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 uppercase">
                         Proses
                     </button>
                 </form>

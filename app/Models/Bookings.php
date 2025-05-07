@@ -17,4 +17,15 @@ class Bookings extends Model
         'total_price',
         'notes',
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(User::class, 'customer_id');
+    }
+
+    public function packagePrice()
+    {
+        return $this->belongsTo(PackagePrices::class, 'package_price_id');
+    }
+
 }

@@ -1,4 +1,4 @@
-<div>
+<div class="px-2 py-2">
     <div class="text-sm text-gray-700">
         @if ($step === 1)
             Masukkan data kendaraan Anda untuk melanjutkan

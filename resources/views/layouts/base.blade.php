@@ -41,7 +41,7 @@
 
     <main class="flex-1 overflow-hidden pt-16 pb-20">
         <!-- Scrollable Container -->
-        <div class="h-full overflow-y-auto px-4 py-6">
+        <div class="h-full overflow-y-auto">
             <!-- Content -->
             <div class="container mx-auto">
                 {{ $slot }}
@@ -56,6 +56,7 @@
     @endif
 
     @livewireScripts
+    @stack('script')
 </body>
 
 </html>
