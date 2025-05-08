@@ -34,12 +34,12 @@ class StatusBadge extends Component
     public function colorClass()
     {
         return [
-            'pending' => 'bg-yellow-100 text-yellow-800',
-            'confirmed' => 'bg-blue-100 text-blue-800',
-            'in_progress' => 'bg-indigo-100 text-indigo-800',
-            'completed' => 'bg-green-100 text-green-800',
-            'cancelled' => 'bg-red-100 text-red-800',
-        ][$this->status] ?? 'bg-gray-100 text-gray-800';
+            'pending' => 'bg-yellow-500 text-black',
+            'confirmed' => 'bg-blue-500 text-white',
+            'in_progress' => 'bg-indigo-500 text-white',
+            'completed' => 'bg-green-500 text-white',
+            'cancelled' => 'bg-red-500 text-white',
+        ][$this->status] ?? 'bg-gray-500 text-black';
     }
 
     /**
