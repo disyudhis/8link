@@ -14,7 +14,7 @@
 
     <!-- Scripts -->
     @if (app()->environment('production'))
-        <link rel="stylesheet" href="{{ asset('build/assets/app-Di1ylkxv.css') }}">
+        <link rel="stylesheet" href="{{ asset('build/assets/app-BXA68R2V.css') }}">
         <script type="module" src="{{ asset('build/assets/app-T1DpEqax.js') }}"></script>
     @else
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -28,7 +28,7 @@
     <div class="font-sans antialiased">
         {{ $slot }}
     </div>
-
+p
     @livewireScripts
 </body>
 
