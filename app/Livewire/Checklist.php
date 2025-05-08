@@ -2,10 +2,11 @@
 
 namespace App\Livewire;
 
-use Nette\Utils\Image;
 use Livewire\Component;
 use App\Models\Bookings;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -31,11 +32,7 @@ class Checklist extends Component
     public $images = [];
 
     // Define allowed mime types
-    private $allowedMimeTypes = [
-        'image/jpeg',
-        'image/png',
-        'image/webp'
-    ];
+    private $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
     // Set maximum upload file size (2MB)
     private $maxFileSize = 2048;
@@ -101,6 +98,7 @@ class Checklist extends Component
                 $this->notes = $checklist->notes;
             }
         } catch (\Exception $e) {
+            dd($e->getMessage());
             Log::error('Error loading vehicle inspection data: ' . $e->getMessage());
             session()->flash('error', 'Terjadi kesalahan saat memuat data. Silakan coba lagi.');
             return redirect()->route('reservasi.index');
@@ -141,7 +139,7 @@ class Checklist extends Component
      */
     private function fileExists($path)
     {
-        return Storage::disk('cpanel')->exists($path);
+        return Storage::disk('public')->exists($path);
     }
 
     /**
@@ -178,7 +176,7 @@ class Checklist extends Component
             'hoodImage' => 'hood',
             'roofImage' => 'roof',
             'leftSideImage' => 'left_side',
-            'rightSideImage' => 'right_side'
+            'rightSideImage' => 'right_side',
         ];
 
         // Check if the updated field is one of our image fields
@@ -199,14 +197,13 @@ class Checklist extends Component
                     throw new \Exception('Format file tidak diizinkan');
                 }
 
-                if ($file->getSize() > ($this->maxFileSize * 1024)) {
+                if ($file->getSize() > $this->maxFileSize * 1024) {
                     throw new \Exception('Ukuran file terlalu besar');
                 }
 
                 // Set the temporary URL in the images array
                 $imageKey = $imageFieldMapping[$field];
                 $this->images[$imageKey] = $file->temporaryUrl();
-
             } catch (\Exception $e) {
                 // Reset the field on error
                 $this->$field = null;
@@ -237,7 +234,7 @@ class Checklist extends Component
                 'hoodImage' => 'hood',
                 'roofImage' => 'roof',
                 'leftSideImage' => 'left_side',
-                'rightSideImage' => 'right_side'
+                'rightSideImage' => 'right_side',
             ];
 
             foreach ($imageFields as $fieldName => $dbColumn) {
@@ -251,10 +248,7 @@ class Checklist extends Component
 
             try {
                 // Save or update checklist
-                $checklist = ChecklistModel::updateOrCreate(
-                    ['booking_id' => $this->bookingId],
-                    $data
-                );
+                $checklist = ChecklistModel::updateOrCreate(['booking_id' => $this->bookingId], $data);
 
                 \DB::commit();
 
@@ -267,14 +261,12 @@ class Checklist extends Component
 
                 // Redirect to booking details or next step
                 return redirect()->route('reservasi.show', $this->bookingId);
-
             } catch (\Exception $e) {
                 dd($e->getMessage());
                 \DB::rollBack();
                 Log::error('Error saving inspection checklist: ' . $e->getMessage());
                 session()->flash('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
             }
-
         } catch (\Exception $e) {
             dd('submit', $e->getMessage());
             Log::error('Vehicle inspection validation error: ' . $e->getMessage());
@@ -292,35 +284,29 @@ class Checklist extends Component
     private function storeImage($image, $section)
     {
         try {
-            // Create folder if it doesn't exist
+            // Tentukan path penyimpanan
             $storagePath = "vehicle-inspection/{$this->bookingId}";
 
-            if (!Storage::disk('cpanel')->exists($storagePath)) {
-                dd('not exists');
-                Storage::disk('cpanel')->makeDirectory($storagePath);
+            // Buat folder jika belum ada
+            if (!Storage::disk('public')->exists($storagePath)) {
+                Storage::disk('public')->makeDirectory($storagePath);
             }
 
-            // Generate a unique filename to prevent overwriting
+            // Buat nama file unik
             $filename = Str::slug($section) . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
             $fullPath = "{$storagePath}/{$filename}";
 
-            // Process and optimize image
-            $img = Image::make($image->getRealPath())
-                ->resize($this->imageWidth, $this->imageHeight, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                })
-                ->encode($image->getClientOriginalExtension(), 80); // compress with 80% quality
+            // Resize dan kompres gambar menggunakan Intervention
+            $manager = new ImageManager(new Driver()); // Gd default, bisa diganti Imagick
+            $resizedImage = $manager->read($image)->resize($this->imageWidth, $this->imageHeight)->toJpeg(80); // Kompres dengan kualitas 80%
 
-            // Store the image
-            Storage::disk('cpanel')->put($fullPath, $img->stream());
+            // Simpan file ke disk publik
+            Storage::disk('public')->put($fullPath, $resizedImage->toString());
 
-            // Return the path for database storage
             return $fullPath;
-
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             dd($e->getMessage());
-            Log::error('Error storing image: ' . $e->getMessage());
+            Log::error('Gagal menyimpan gambar: ' . $e->getMessage());
             throw new \Exception('Gagal menyimpan gambar. Silakan coba lagi.');
         }
     }
