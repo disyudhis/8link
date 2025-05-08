@@ -7,7 +7,7 @@
             <p class="text-black text-sm">Layanan perbaikan mobil tepercaya</p>
 
             <!-- Search Bar -->
-            <div class="mt-4 relative">
+            {{-- <div class="mt-4 relative">
                 <input type="text" placeholder="Cari layanan atau sparepart..."
                     class="w-full py-2 pl-10 pr-4 rounded-lg bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-sm">
                 <div class="absolute left-3 top-2">
@@ -17,7 +17,7 @@
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 
@@ -85,7 +85,7 @@
         </a>
 
         <!-- Promo Section -->
-        <div class="bg-white rounded-lg shadow-sm p-4">
+        {{-- <div class="bg-white rounded-lg shadow-sm p-4">
             <h3 class="font-semibold text-gray-800 mb-3">Promo Spesial</h3>
             <div class="overflow-x-auto flex space-x-3 pb-2">
                 <!-- Promo Card 1 -->
@@ -116,10 +116,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Layanan Populer -->
-        <div class="bg-white rounded-lg shadow-sm p-4">
+        {{-- <div class="bg-white rounded-lg shadow-sm p-4">
             <h3 class="font-semibold text-gray-800 mb-3">Layanan Populer</h3>
             <div class="grid grid-cols-3 gap-3">
                 <!-- Layanan 1 -->
@@ -194,7 +194,7 @@
                     <p class="text-xs font-medium mt-1 text-gray-700">Garansi</p>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <!-- Tab Content - Antrian Saya -->
@@ -213,64 +213,58 @@
                 @foreach ($bookings as $booking)
                     <div class="bg-white rounded-lg shadow-sm mb-3 overflow-hidden">
                         <!-- Header with status indicator -->
-                        <div
-                            class="border-l-4 px-4 py-3
-                            @if ($booking->status == 'pending') border-yellow-500
-                            @elseif($booking->status == 'processing') border-blue-500
-                            @elseif($booking->status == 'completed') border-green-500
-                            @elseif($booking->status == 'cancelled') border-red-500 @endif">
-                            <div class="flex justify-between items-center">
-                                <h4 class="font-semibold text-gray-800">{{ $booking->car_name }}</h4>
-                                <span
-                                    class="text-xs px-2 py-1 rounded-full
-                                    @if ($booking->status == 'pending') bg-yellow-100 text-yellow-700
-                                    @elseif($booking->status == 'processing') bg-blue-100 text-blue-700
-                                    @elseif($booking->status == 'completed') bg-green-100 text-green-700
-                                    @elseif($booking->status == 'cancelled') bg-red-100 text-red-700 @endif">
-                                    {{ $statusLabels[$booking->status] }}
-                                </span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">{{ $booking->license_plate }} •
-                                {{ $booking->car_color }}</p>
+                        <div class="border-l-4 px-4 py-3
+                            {{ $booking->status_color }}">
+                            <div class="flex
+                            justify-between items-center">
+                            <h4 class="font-semibold text-gray-800">{{ $booking->car_name }}</h4>
+                            <span
+                                class="text-xs px-2 py-1 rounded-full
+                                    {{$booking->status_color}} text-black">
+                                {{ $booking->status_text }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">{{ $booking->license_plate }} •
+                            {{ $booking->car_color }}</p>
+                    </div>
+
+                    <!-- Booking Details -->
+                    <div class="px-4 py-3 border-t border-gray-100">
+                        <div class="flex items-center mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-2" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span class="text-sm">{{ $this->formatDate($booking->booking_date) }}</span>
                         </div>
 
-                        <!-- Booking Details -->
-                        <div class="px-4 py-3 border-t border-gray-100">
-                            <div class="flex items-center mb-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-2"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span class="text-sm">{{ $this->formatDate($booking->booking_date) }}</span>
-                            </div>
-
-                            <div class="flex items-center mb-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-2"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                </svg>
-                                <span
-                                    class="text-sm">{{ $booking->packagePrice ? $booking->packagePrice->servicePackage->name : 'Paket Tidak Tersedia' }}</span>
-                            </div>
-
-                            <div class="flex items-center">
-                                Rp.
-                                <span class="text-sm">{{ number_format($booking->total_price, 0, ',', '.') }}K</span>
-                            </div>
+                        <div class="flex items-center mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-2" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            <span
+                                class="text-sm">{{ $booking->packagePrice ? $booking->packagePrice->servicePackage->name : 'Paket Tidak Tersedia' }}</span>
                         </div>
 
-                        <!-- Notes if available -->
-                        @if ($booking->notes)
-                            <div class="px-4 py-3 border-t border-gray-100 bg-gray-50">
-                                <p class="text-xs text-gray-600">{{ $booking->notes }}</p>
-                            </div>
-                        @endif
+                        <div class="flex items-center">
+                            Rp.
+                            <span class="text-sm">{{ number_format($booking->total_price, 0, ',', '.') }}K</span>
+                        </div>
+                    </div>
 
-                        <!-- Action Buttons -->
-                        <div class="px-4 py-3 border-t border-gray-100 flex justify-between">
-                            {{-- @if ($booking->status === 'pending')
+                    <!-- Notes if available -->
+                    @if ($booking->notes)
+                        <div class="px-4 py-3 border-t border-gray-100 bg-gray-50">
+                            <p class="text-xs text-gray-600">{{ $booking->notes }}</p>
+                        </div>
+                    @endif
+
+                    <!-- Action Buttons -->
+                    <div class="px-4 py-3 border-t border-gray-100 flex justify-between">
+                        {{-- @if ($booking->status === 'pending')
                                 <button wire:click="cancelBooking({{ $booking->id }})" wire:loading.attr="disabled"
                                     class="text-xs font-medium text-red-600 hover:text-red-800">
                                     Batalkan
@@ -278,53 +272,53 @@
                             @else
                                 <span></span>
                             @endif --}}
-                            <a href="{{ route('reservasi.show', $booking->id) }}"
-                                class="text-xs font-medium text-yellow-600 hover:text-yellow-800">
-                                Lihat Detail
-                            </a>
-                        </div>
+                        <a href="{{ route('reservasi.show', $booking->id) }}"
+                            class="text-xs font-medium text-yellow-600 hover:text-yellow-800">
+                            Lihat Detail
+                        </a>
                     </div>
-                @endforeach
-            @else
-                <!-- No bookings state -->
-                <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-                    <div class="bg-yellow-100 rounded-full h-14 w-14 mx-auto flex items-center justify-center mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-yellow-500" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                    </div>
-                    <h3 class="font-semibold text-gray-800 mb-2">Belum Ada Antrian Aktif</h3>
-                    <p class="text-sm text-gray-600 mb-4">Anda belum memiliki reservasi layanan aktif saat ini.</p>
-                    <a href="{{ route('paket-pengerjaan') }}"
-                        class="inline-block bg-primary text-black text-sm font-medium px-4 py-2 rounded-lg">
-                        Buat Reservasi
-                    </a>
-                </div>
-            @endif
         </div>
-
-        <!-- Toast Notification Script -->
-        @push('script')
-            <script>
-                document.addEventListener('show-message', event => {
-                    Swal.fire({
-                        icon: event.detail.type,
-                        title: event.detail.type === 'success' ? 'Berhasil!' : 'Oops!',
-                        text: event.detail.message,
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true
-                    });
-                });
-            </script>
-        @endpush
+        @endforeach
+    @else
+        <!-- No bookings state -->
+        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
+            <div class="bg-yellow-100 rounded-full h-14 w-14 mx-auto flex items-center justify-center mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-yellow-500" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+            </div>
+            <h3 class="font-semibold text-gray-800 mb-2">Belum Ada Antrian Aktif</h3>
+            <p class="text-sm text-gray-600 mb-4">Anda belum memiliki reservasi layanan aktif saat ini.</p>
+            <a href="{{ route('paket-pengerjaan') }}"
+                class="inline-block bg-primary text-black text-sm font-medium px-4 py-2 rounded-lg">
+                Buat Reservasi
+            </a>
+        </div>
+        @endif
     </div>
 
-    <x-slot name="bottomNavigation">
-        <x-mobile-bottom-navigation />
-    </x-slot>
+    <!-- Toast Notification Script -->
+    @push('script')
+        <script>
+            document.addEventListener('show-message', event => {
+                Swal.fire({
+                    icon: event.detail.type,
+                    title: event.detail.type === 'success' ? 'Berhasil!' : 'Oops!',
+                    text: event.detail.message,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            });
+        </script>
+    @endpush
+</div>
+
+<x-slot name="bottomNavigation">
+    <x-mobile-bottom-navigation />
+</x-slot>
 </div>

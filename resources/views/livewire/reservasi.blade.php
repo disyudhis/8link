@@ -1,8 +1,8 @@
 <div class="max-w-md mx-auto bg-gradient-to-b from-gray-50 to-white min-h-screen flex flex-col">
     <!-- Header with curved design -->
-    <div class="bg-gradient-to-r from-yellow-400 to-yellow-300 text-black p-4 rounded-b-[40px] pb-16 relative shadow-lg">
+    <div class="bg-gradient-to-r from-yellow-300 to-yellow-200 text-black p-4 rounded-b-[40px] pb-16 relative shadow-lg">
         <div class="flex items-center mb-6">
-            <a href="{{ redirect()->back() }}" class="text-black hover:text-gray-800 transition-colors duration-300">
+            <a href="{{ route('reservasi.index') }}" class="text-black hover:text-gray-800 transition-colors duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
@@ -17,19 +17,19 @@
             </div>
             <h2 class="text-2xl font-bold">Nomor Antrian</h2>
             <div class="text-3xl font-extrabold mt-1 bg-white px-6 py-2 rounded-full shadow-md">
-                {{ $booking->id ?? 'A-007' }}
+                {{ $booking->queue_number ?? 'A-007' }}
             </div>
             <p class="text-sm text-black/80 mt-2">Detail kendaraan Anda</p>
         </div>
     </div>
 
     <!-- Card Info with enhanced design -->
-    <div class="px-5 -mt-10 z-10">
+    <div class="px-5 -mt-10 z-5">
         <div class="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100 transform transition-transform hover:shadow-2xl duration-300">
             <div class="space-y-4">
                 <div class="flex justify-between items-center">
                     <span class="text-gray-600 font-medium flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
                         </svg>
                         Nama Pemilik
@@ -40,7 +40,7 @@
 
                 <div class="flex justify-between items-center">
                     <span class="text-gray-600 font-medium flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
                             <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H11a1 1 0 001-1v-1h3.05a2.5 2.5 0 014.9 0H19a1 1 0 001-1v-4a1 1 0 00-.293-.707l-3-3A1 1 0 0016 5h-3a1 1 0 00-1-1H3z" />
                         </svg>
@@ -52,7 +52,7 @@
 
                 <div class="flex justify-between items-center">
                     <span class="text-gray-600 font-medium flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z" clip-rule="evenodd" />
                         </svg>
                         Warna
@@ -63,7 +63,7 @@
 
                 <div class="flex justify-between items-center">
                     <span class="text-gray-600 font-medium flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h8V3a1 1 0 112 0v1h1a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V6a2 2 0 012-2h1V3a1 1 0 011-1zm11 14a1 1 0 001-1V6a1 1 0 00-1-1H4a1 1 0 00-1 1v9a1 1 0 001 1h12z" clip-rule="evenodd" />
                         </svg>
                         Paket
@@ -74,7 +74,7 @@
 
                 <div class="flex justify-between items-center">
                     <span class="text-gray-600 font-medium flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
                         </svg>
                         Plat Nomor
@@ -86,10 +86,10 @@
     </div>
 
     <!-- Status Timeline -->
-    <div class="px-5 mb-6">
+    {{-- <div class="px-5 mb-6">
         <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
             <h3 class="text-lg font-bold mb-4 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
                 </svg>
                 Status Pengerjaan
@@ -100,7 +100,7 @@
                     @foreach($this->statuses as $key => $status)
                         <div class="flex-1 flex flex-col items-center">
                             <div class="w-6 h-6 rounded-full
-                                {{ $status['current'] ? 'bg-yellow-500' :
+                                {{ $status['current'] ? 'bg-primary' :
                                    ($status['completed'] ? 'bg-green-500' : 'bg-gray-300') }}
                                 flex items-center justify-center text-white text-xs mb-1">
                                 @if($status['completed'])
@@ -124,15 +124,15 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Tanggal Pengerjaan -->
     <div class="px-5 flex-grow">
         <div class="bg-white rounded-2xl shadow-lg p-5 mb-6 border border-gray-100">
             <div class="text-center mb-3">
-                <p class="text-gray-500 text-sm mb-1">Dikerjakan Pada Tanggal</p>
+                <p class="text-gray-500 text-sm mb-1">Masuk bengkel pada tanggal</p>
                 <h3 class="text-xl font-bold text-gray-800 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
                     </svg>
                     {{ \Carbon\Carbon::parse($booking->booking_date)->format('d F Y') }}
@@ -144,7 +144,7 @@
         @if($booking->notes)
         <div class="bg-white rounded-2xl shadow-lg p-5 mb-6 border border-gray-100">
             <h3 class="text-lg font-bold mb-2 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H6z" clip-rule="evenodd" />
                 </svg>
                 Catatan
@@ -163,78 +163,15 @@
                 Chat Dengan Teknisi
             </a>
 
-            <button wire:click="toggleChecklistModal"
-                class="w-full bg-yellow-400 hover:bg-yellow-500 text-black py-4 px-4 rounded-xl flex items-center justify-center transition duration-300 shadow-md transform hover:scale-105">
+            <a type="button" href="{{ route('checklist', $booking->id) }}"
+                class="w-full bg-primary hover:bg-yellow-200 text-black py-4 px-4 rounded-xl flex items-center justify-center transition duration-300 shadow-md transform hover:scale-105">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
                 Checklist dengan Pekerja
-            </button>
+            </a>
         </div>
     </div>
-
-    <!-- Checklist Modal -->
-    @if($showChecklistModal)
-    <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0 transform scale-95"
-         x-transition:enter-end="opacity-100 transform scale-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100 transform scale-100"
-         x-transition:leave-end="opacity-0 transform scale-95">
-        <div class="bg-white rounded-2xl w-full max-w-md max-h-[80vh] overflow-y-auto p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">Checklist Pengerjaan</h3>
-                <button wire:click="toggleChecklistModal" class="text-gray-500 hover:text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <div class="space-y-3 mb-4">
-                @foreach($checklistItems as $index => $item)
-                    <div class="flex items-center p-3 border border-gray-200 rounded-lg {{ in_array($index, $completedItems) ? 'bg-green-50' : 'bg-white' }}">
-                        <input type="checkbox" wire:click="toggleChecklistItem({{ $index }})"
-                               {{ in_array($index, $completedItems) ? 'checked' : '' }}
-                               class="form-checkbox h-5 w-5 text-yellow-500 rounded cursor-pointer">
-                        <span class="ml-3 text-gray-700">{{ $item }}</span>
-
-                        @if(in_array($index, $completedItems))
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-auto text-green-500" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                            </svg>
-                        @endif
-                    </div>
-                @endforeach
-            </div>
-
-            <div class="flex justify-end">
-                <button wire:click="updateChecklist" class="bg-yellow-400 hover:bg-yellow-500 text-black py-2 px-4 rounded-lg font-medium transition duration-300">
-                    Simpan Checklist
-                </button>
-            </div>
-        </div>
-    </div>
-    @endif
-
-    <!-- Flash Message -->
-    @if (session()->has('message'))
-        <div id="flash-message" class="fixed bottom-20 inset-x-0 flex items-center justify-center px-4">
-            <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-sm text-center">
-                {{ session('message') }}
-            </div>
-        </div>
-        <script>
-            setTimeout(function() {
-                const flashMessage = document.getElementById('flash-message');
-                if (flashMessage) {
-                    flashMessage.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-                    setTimeout(() => flashMessage.remove(), 500);
-                }
-            }, 3000);
-        </script>
-    @endif
     <x-slot name="bottomNavigation">
         <x-mobile-bottom-navigation />
     </x-slot>

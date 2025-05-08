@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
+            $table->string('queue_number')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('package_price_id')->nullable();

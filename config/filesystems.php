@@ -47,6 +47,14 @@ return [
             'report' => false,
         ],
 
+        'cpanel' => [
+            'driver' => 'local',
+            'root' => env('CPANEL_STORAGE_PATH', storage_path('app/public')),
+            'url' => env('APP_URL').'/'.env('CPANEL_STORAGE_DIR', 'storage'),
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

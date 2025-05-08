@@ -166,9 +166,14 @@ class PaketPengerjaan extends Component
                 'car_name' => $this->vehicleData['car_name'],
                 'car_color' => $this->vehicleData['car_color'],
                 'booking_date' => $this->vehicleData['service_date'],
-                'status' => 'pending', // Default status for new bookings
+                'status' => 'in_progress', // Default status for new bookings
                 'total_price' => $this->vehicleData['package_price'],
                 'notes' => $this->vehicleData['notes'] ?? null,
+                'queue_number' => 'Q-' . date('Ymd') . '-' . str_pad(Bookings::count() + 1, 4, '0', STR_PAD_LEFT),
+            ]);
+
+            $booking->checklist()->create([
+                'booking_id' => $booking->id,
             ]);
 
             // Store booking ID in session
@@ -179,12 +184,11 @@ class PaketPengerjaan extends Component
             session()->flash('message', 'Reservasi berhasil dibuat!');
 
             // Redirect to confirmation/checkout page
-            return redirect()->route('reservasi');
+            return redirect()->route('reservasi.show', $booking->id);
 
         } catch (\Exception $e) {
             // Log error
             \Log::error('Booking creation failed: ' . $e->getMessage());
-
             // Show error message
             session()->flash('error', 'Terjadi kesalahan saat menyimpan data reservasi. Silakan coba lagi.');
         }
