@@ -40,6 +40,7 @@ class ListReservasi extends Component
     public function render()
     {
         $bookings = Bookings::query()
+            ->where('customer_id', auth()->id())
             ->when($this->search, function ($query) {
                 $query->where(function ($query) {
                     $query->where('license_plate', 'like', '%' . $this->search . '%')
