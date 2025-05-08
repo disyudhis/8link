@@ -296,10 +296,9 @@ class Checklist extends Component
             $storagePath = "vehicle-inspection/{$this->bookingId}";
 
             if (!Storage::disk('cpanel')->exists($storagePath)) {
+                dd('not exists');
                 Storage::disk('cpanel')->makeDirectory($storagePath);
             }
-
-            dd('unable ye');
 
             // Generate a unique filename to prevent overwriting
             $filename = Str::slug($section) . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
