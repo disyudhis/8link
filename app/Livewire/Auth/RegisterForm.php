@@ -13,6 +13,7 @@ class RegisterForm extends Component
 {
     public $phone = '';
     public $name = '';
+    public $user_type = User::ROLE_USER;
     public $email = '';
     public $vehicle_type = '';
     public $step = 1;
@@ -44,34 +45,60 @@ class RegisterForm extends Component
 
     public function register()
     {
-        $this->validate([
-            'password' => ['required', 'string', Password::min(8)
-                ->letters()
-                ->mixedCase()
-                ->numbers()
-                ->symbols()],
-        ], [
-            'password.required' => 'Password wajib diisi',
-        ]);
+        $this->validate(
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'phone' => ['required', 'string', 'max:20', 'unique:users'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'string', Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
+            ],
+            [
+                'name.required' => 'Nama wajib diisi',
+                'phone.required' => 'Nomor telepon wajib diisi',
+                'phone.unique' => 'Nomor telepon sudah terdaftar',
+                'email.required' => 'Email wajib diisi',
+                'email.unique' => 'Email sudah terdaftar',
+                'password.required' => 'Password wajib diisi',
+            ],
+        );
 
-        $user = User::create([
-            'name' => $this->name,
-            'phone' => $this->phone,
-            'email' => $this->email,
-            'vehicle_type' => $this->vehicle_type,
-            'password' => Hash::make($this->password),
-        ]);
+        try {
+            $user = User::create([
+                'name' => $this->name,
+                'phone' => $this->phone,
+                'email' => $this->email,
+                'user_type' => $this->user_type ?? 'USER', // Default ke customer
+                'password' => Hash::make($this->password),
+                'email_verified_at' => null, // Akan diverifikasi via email
+            ]);
 
-        event(new Registered($user));
+            event(new Registered($user));
+            Auth::login($user);
 
-        Auth::login($user);
+            // Reset form setelah sukses
+            $this->reset(['name', 'phone', 'email', 'password']);
 
-        return redirect()->intended(route('home'));
+            // Redirect berdasarkan user_type
+            return $this->redirectBasedOnUserType($user);
+        } catch (\Exception $e) {
+            $this->addError('register', 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.');
+            \Log::error('Registration failed: ' . $e->getMessage());
+        }
+    }
+
+    private function redirectBasedOnUserType($user)
+    {
+        switch ($user->user_type) {
+            case 'ADMIN':
+                return redirect()->route('admin.antrian');
+            case 'USER':
+                default:
+                return redirect()->route('user.home');
+        }
     }
 
     public function render()
     {
-        return view('livewire.auth.register-form')
-            ->layout('layouts.guest');
+        return view('livewire.auth.register-form')->layout('layouts.guest');
     }
 }

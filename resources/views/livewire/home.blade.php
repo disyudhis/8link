@@ -58,7 +58,7 @@
     <!-- Tab Content - Layanan -->
     <div x-show="activeTab === 'layanan'" class="px-4 space-y-4">
         <!-- Paket Pengerjaan Card -->
-        <a href="{{ route('paket-pengerjaan') }}" class="block">
+        <a href="{{ route('user.paket-pengerjaan') }}" class="block">
             <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div class="flex items-center">
                     <div class="flex-shrink-0 bg-primary text-black p-4 flex items-center justify-center w-16">
@@ -272,7 +272,7 @@
                             @else
                                 <span></span>
                             @endif --}}
-                        <a href="{{ route('reservasi.show', $booking->id) }}"
+                        <a href="{{ route('user.reservasi.show', $booking->id) }}"
                             class="text-xs font-medium text-yellow-600 hover:text-yellow-800">
                             Lihat Detail
                         </a>
@@ -291,7 +291,7 @@
             </div>
             <h3 class="font-semibold text-gray-800 mb-2">Belum Ada Antrian Aktif</h3>
             <p class="text-sm text-gray-600 mb-4">Anda belum memiliki reservasi layanan aktif saat ini.</p>
-            <a href="{{ route('paket-pengerjaan') }}"
+            <a href="{{ route('user.paket-pengerjaan') }}"
                 class="inline-block bg-primary text-black text-sm font-medium px-4 py-2 rounded-lg">
                 Buat Reservasi
             </a>

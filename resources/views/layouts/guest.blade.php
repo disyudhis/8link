@@ -28,7 +28,6 @@
     <div class="font-sans antialiased">
         {{ $slot }}
     </div>
-p
     @livewireScripts
 </body>
 

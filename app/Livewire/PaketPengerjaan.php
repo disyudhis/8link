@@ -166,7 +166,7 @@ class PaketPengerjaan extends Component
                 'car_name' => $this->vehicleData['car_name'],
                 'car_color' => $this->vehicleData['car_color'],
                 'booking_date' => $this->vehicleData['service_date'],
-                'status' => 'in_progress', // Default status for new bookings
+                'status' => 'pending', // Default status for new bookings
                 'total_price' => $this->vehicleData['package_price'],
                 'notes' => $this->vehicleData['notes'] ?? null,
                 'queue_number' => 'Q-' . date('Ymd') . '-' . str_pad(Bookings::count() + 1, 4, '0', STR_PAD_LEFT),
@@ -184,7 +184,7 @@ class PaketPengerjaan extends Component
             session()->flash('message', 'Reservasi berhasil dibuat!');
 
             // Redirect to confirmation/checkout page
-            return redirect()->route('reservasi.show', $booking->id);
+            return redirect()->route('user.reservasi.show', $booking->id);
 
         } catch (\Exception $e) {
             // Log error

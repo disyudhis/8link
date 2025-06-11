@@ -2,7 +2,7 @@
     <!-- Header dengan desain minimalis -->
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-bold text-gray-800">Daftar Reservasi</h2>
-        <a href="{{ route('paket-pengerjaan') }}" class="bg-primary hover:bg-secondnary text-black px-3 py-1.5 rounded-md text-sm flex items-center">
+        <a href="{{ route('user.paket-pengerjaan') }}" class="bg-primary hover:bg-secondnary text-black px-3 py-1.5 rounded-md text-sm flex items-center">
             <x-icon.plus :size="4" class="mr-1" />
             Tambah
         </a>
@@ -76,7 +76,7 @@
 
                 <div class="px-3 py-2 bg-gray-50 border-t border-gray-200">
                     <div class="flex justify-end">
-                        <a href="{{ route('reservasi.show', $booking) }}" class="inline-flex items-center px-3 py-1 text-xs bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100">
+                        <a href="{{ route('user.reservasi.show', $booking) }}" class="inline-flex items-center px-3 py-1 text-xs bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100">
                             <x-icon.eye :size="4" class="mr-1" />
                             Detail
                         </a>
@@ -88,7 +88,7 @@
                 message="Tidak ada reservasi ditemukan"
                 icon="calendar"
                 actionText="Tambah Reservasi Baru"
-                actionUrl="{{ route('paket-pengerjaan') }}"
+                actionUrl="{{ route('user.paket-pengerjaan') }}"
             />
 
         @endforelse

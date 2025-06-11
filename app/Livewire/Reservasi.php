@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Bookings;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class Reservasi extends Component
 {
@@ -12,6 +14,8 @@ class Reservasi extends Component
     public $checklistItems = [];
     public $completedItems = [];
     public $showChecklistModal = false;
+    public $showConfirmModal = false;
+    public $rejectionReason = '';
 
     // Define status mapping
     protected $statusMap = [
@@ -22,19 +26,7 @@ class Reservasi extends Component
     ];
 
     // Checklist items based on service package
-    protected $defaultChecklistItems = [
-        'Pembersihan awal mobil',
-        'Pengecekan kondisi cat',
-        'Aplikasi coating layer 1',
-        'Pengeringan layer 1',
-        'Aplikasi coating layer 2',
-        'Pengeringan layer 2',
-        'Aplikasi coating layer 3',
-        'Pengeringan layer 3',
-        'Aplikasi coating layer 4',
-        'Pengeringan layer 4',
-        'Quality control akhir'
-    ];
+    protected $defaultChecklistItems = ['Pembersihan awal mobil', 'Pengecekan kondisi cat', 'Aplikasi coating layer 1', 'Pengeringan layer 1', 'Aplikasi coating layer 2', 'Pengeringan layer 2', 'Aplikasi coating layer 3', 'Pengeringan layer 3', 'Aplikasi coating layer 4', 'Pengeringan layer 4', 'Quality control akhir'];
 
     protected $listeners = ['refreshBookingDetail' => '$refresh'];
 
@@ -47,8 +39,7 @@ class Reservasi extends Component
 
     public function loadBooking()
     {
-        $this->booking = Bookings::with(['customer', 'packagePrice.servicePackage'])
-            ->findOrFail($this->bookingId);
+        $this->booking = Bookings::with(['customer', 'packagePrice.servicePackage'])->findOrFail($this->bookingId);
     }
 
     public function initializeChecklist()
@@ -65,6 +56,76 @@ class Reservasi extends Component
         }
     }
 
+    // Admin Functions
+    public function isAdmin()
+    {
+        return Auth::user()->user_type === User::ROLE_ADMIN;
+    }
+
+    public function canConfirm()
+    {
+        return $this->isAdmin() && $this->booking->status === Bookings::STATUS_PENDING;
+    }
+
+    public function confirmBooking()
+    {
+        if (!$this->canConfirm()) {
+            session()->flash('error', 'Tidak dapat mengkonfirmasi reservasi ini.');
+            return;
+        }
+
+        $this->booking->update([
+            'status' => Bookings::STATUS_CONFIRMED,
+        ]);
+
+        session()->flash('message', 'Reservasi berhasil dikonfirmasi!');
+        $this->loadBooking(); // Refresh data
+    }
+
+    public function showConfirmationModal()
+    {
+        if (!$this->canConfirm()) {
+            return;
+        }
+
+        $this->showConfirmModal = true;
+    }
+
+    public function hideConfirmationModal()
+    {
+        $this->showConfirmModal = false;
+        $this->rejectionReason = '';
+    }
+
+    public function rejectBooking()
+    {
+        if (!$this->canConfirm()) {
+            session()->flash('error', 'Tidak dapat menolak reservasi ini.');
+            return;
+        }
+
+        $this->validate(
+            [
+                'rejectionReason' => 'required|min:10|max:500',
+            ],
+            [
+                'rejectionReason.required' => 'Alasan penolakan harus diisi.',
+                'rejectionReason.min' => 'Alasan penolakan minimal 10 karakter.',
+                'rejectionReason.max' => 'Alasan penolakan maksimal 500 karakter.',
+            ],
+        );
+
+        $this->booking->update([
+            'status' => Bookings::STATUS_CANCELLED,
+            'notes' => $this->booking->notes . "\n\nDitolak oleh admin: " . $this->rejectionReason,
+        ]);
+
+        session()->flash('message', 'Reservasi berhasil ditolak.');
+        $this->hideConfirmationModal();
+        $this->loadBooking(); // Refresh data
+    }
+
+    // Existing Customer Functions
     public function toggleChecklistModal()
     {
         $this->showChecklistModal = !$this->showChecklistModal;
@@ -112,7 +173,7 @@ class Reservasi extends Component
         $statuses = $this->statusMap;
 
         // Sort by order
-        uasort($statuses, function($a, $b) {
+        uasort($statuses, function ($a, $b) {
             return $a['order'] <=> $b['order'];
         });
 
@@ -138,7 +199,7 @@ class Reservasi extends Component
     public function render()
     {
         return view('livewire.reservasi')->layout('layouts.base', [
-            'title' => 'Detail Reservasi'
+            'title' => 'Detail Reservasi',
         ]);
     }
 }

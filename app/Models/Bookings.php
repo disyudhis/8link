@@ -43,7 +43,7 @@ class Bookings extends Model
     public function getStatusColorAttribute()
     {
         if ($this->status == self::STATUS_PENDING) {
-            return 'bg-yellow-300';
+            return 'bg-yellow-100';
         } elseif ($this->status == self::STATUS_CONFIRMED) {
             return 'bg-blue-300';
         } elseif ($this->status == self::STATUS_PROGRESS) {
