@@ -20,12 +20,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'user_type' => 'ADMIN'
         ]);
-        
+
         $this->call([
             CarCategorySeeder::class,
             ServicePackageSeeder::class,
             PackagePriceSeeder::class,
-            // Add other seeders here
+            WorkerSeeder::class
         ]);
     }
 }

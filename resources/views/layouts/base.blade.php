@@ -25,7 +25,7 @@
 </head>
 
 <body class="font-sans antialiased bg-gray-100">
-    <header class="fixed top-0 left-0 right-0 z-10 bg-white shadow-md">
+    <header class="fixed top-0 left-0 right-0 z-30 bg-white shadow-md">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->

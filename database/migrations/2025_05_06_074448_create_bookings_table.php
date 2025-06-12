@@ -25,6 +25,11 @@ return new class extends Migration
             $table->enum('status', ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'])->nullable();
             $table->string('total_price')->nullable();
             $table->text('notes')->nullable();
+            $table->unsignedBigInteger('assigned_worker_id')->nullable();
+            $table->time('assigned_at')->nullable();
+            $table->time('started_at')->nullable();
+            $table->time('completed_at')->nullable();
+            $table->foreign('assigned_worker_id')->references('id')->on('workers')->onDelete('set null');
             $table->timestamps();
         });
     }

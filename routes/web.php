@@ -3,6 +3,7 @@
 use App\Livewire\AntrianAdmin;
 use App\Livewire\Home;
 use App\Livewire\Checklist;
+use App\Livewire\PengerjaanAdmin;
 use App\Livewire\Reservasi;
 use App\Livewire\ListReservasi;
 use App\Livewire\PaketPengerjaan;
@@ -18,7 +19,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         ->name('admin.')
         ->group(function () {
             Route::get('/', AntrianAdmin::class)->name('antrian');
-            Route::get('/reservasi/{id}', Reservasi::class)->name('reservasi.show');
+            Route::get('/pengerjaan/{id}', PengerjaanAdmin::class)->name('pengerjaan');
+            // Route::get('/reservasi/{id}', Reservasi::class)->name('reservasi.show');
         });
 
     Route::middleware('worker')
