@@ -1,0 +1,133 @@
+{
+  "workers_cards": {
+    "8D2D3402": {
+      "worker_id": "1",
+      "worker_name": "Ahmad Fauzi",
+      "card_uid": "8D2D3402",
+      "registered_at": "2025-06-17T08:00:00Z",
+      "is_active": true,
+      "last_used": "2025-06-18T10:30:00Z"
+    },
+    "F69BC801": {
+      "worker_id": "2",
+      "worker_name": "Budi Santoso",
+      "card_uid": "F69BC801",
+      "registered_at": "2025-06-17T08:00:00Z",
+      "is_active": true,
+      "last_used": "2025-06-18T09:15:00Z"
+    }
+  },
+
+  "workers": {
+    "1": {
+      "id": 1,
+      "name": "Ahmad Fauzi",
+      "email": "ahmad@example.com",
+      "phone": "081234567890",
+      "specialization": "Cat Body",
+      "is_active": true,
+      "current_booking_id": null,
+      "availability_status": "available",
+      "last_scan": "2025-06-18T10:30:00Z"
+    },
+    "2": {
+      "id": 2,
+      "name": "Budi Santoso",
+      "email": "budi@example.com",
+      "phone": "081234567891",
+      "specialization": "Cat Bumper",
+      "is_active": true,
+      "current_booking_id": null,
+      "availability_status": "available",
+      "last_scan": "2025-06-18T09:15:00Z"
+    }
+  },
+
+  "rfid_scans": {
+    "latest": {
+      "card_uid": "8D2D3402",
+      "worker_id": "1",
+      "worker_name": "Ahmad Fauzi",
+      "timestamp": "1718617200000",
+      "device_id": "ESP32_RFID_STATION_01",
+      "status": "detected",
+      "processed": false,
+      "expires_at": "1718617500000",
+      "session_id": "scan_1718617200000_ESP32_01"
+    },
+    "1718617200000": {
+      "card_uid": "8D2D3402",
+      "worker_id": "1",
+      "worker_name": "Ahmad Fauzi",
+      "timestamp": "1718617200000",
+      "device_id": "ESP32_RFID_STATION_01",
+      "status": "detected",
+      "processed": false,
+      "expires_at": "1718617500000",
+      "session_id": "scan_1718617200000_ESP32_01",
+      "booking_id": null,
+      "assignment_result": null
+    }
+  },
+
+  "assignment_sessions": {
+    "scan_1718617200000_ESP32_01": {
+      "scan_timestamp": "1718617200000",
+      "worker_id": "1",
+      "worker_name": "Ahmad Fauzi",
+      "device_id": "ESP32_RFID_STATION_01",
+      "status": "pending",
+      "booking_id": null,
+      "assigned_by": null,
+      "assigned_at": null,
+      "expires_at": "1718617500000",
+      "error_message": null
+    }
+  },
+
+  "assignment_feedback": {
+    "ESP32_RFID_STATION_01": {
+      "status": "success",
+      "message": "Worker assigned successfully",
+      "booking_id": "123",
+      "worker_id": "1",
+      "timestamp": "1718617250000",
+      "session_id": "scan_1718617200000_ESP32_01"
+    }
+  },
+
+  "devices": {
+    "ESP32_RFID_STATION_01": {
+      "device_id": "ESP32_RFID_STATION_01",
+      "status": "online",
+      "last_seen": "1718618400000",
+      "ip_address": "192.168.1.100",
+      "firmware_version": "1.0.0",
+      "location": "Main Workshop",
+      "last_scan": "1718617200000",
+      "total_scans_today": 15,
+      "uptime": "1718530800000"
+    }
+  },
+
+  "booking_assignments": {
+    "123": {
+      "booking_id": "123",
+      "worker_id": "1",
+      "assigned_at": "1718617250000",
+      "assigned_by": "admin",
+      "assignment_method": "rfid_scan",
+      "device_id": "ESP32_RFID_STATION_01",
+      "session_id": "scan_1718617200000_ESP32_01",
+      "status": "active"
+    }
+  },
+
+  "system_config": {
+    "rfid_scan_timeout": 300000,
+    "assignment_timeout": 60000,
+    "device_heartbeat_interval": 30000,
+    "cleanup_expired_scans": true,
+    "max_concurrent_assignments": 1
+  }
+}

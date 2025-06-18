@@ -9,12 +9,8 @@ class CarCategories extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'code',
-        'description',
-    ];
-
+    protected $fillable = ['name', 'code', 'description'];
+    
     public function packagePrices()
     {
         return $this->hasMany(PackagePrices::class);

@@ -187,7 +187,7 @@
                         <h4 class="font-medium text-gray-900 mb-3">Scan RFID Pekerja</h4>
                         <div class="space-y-3">
                             @if (!$rfidReading)
-                                <button wire:click="startRfidReading"
+                                <button wire:click="startRfidReading" wire:ignore
                                     class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                         <path
@@ -296,59 +296,214 @@
 </div>
 
 @push('script')
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
     <script>
-        // RFID Reading Simulation
-        let rfidInterval;
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5JAXdJRTe5yhPUhKFsgXmljPngM6jkMs",
+            authDomain: "blink-reservation.firebaseapp.com",
+            databaseURL: "https://blink-reservation-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "blink-reservation",
+            storageBucket: "blink-reservation.firebasestorage.app",
+            messagingSenderId: "577448432865",
+            appId: "1:577448432865:web:452f3ecb25c0825e4d93a0"
+        };
 
-        document.addEventListener('livewire:initialized', () => {
-            Livewire.on('start-rfid-reading', () => {
-                console.log('Starting RFID reading...');
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-                // Simulate RFID reading after 3 seconds for demo
-                setTimeout(() => {
-                    // Simulate random RFID data
-                    const simulatedRfidData = 'RFID_' + Math.random().toString(36).substr(2, 9);
-                    Livewire.dispatch('rfid-detected', {
-                        rfidData: simulatedRfidData
+        class RfidManager {
+            constructor() {
+                this.isListening = false;
+                this.listener = null;
+                this.timeoutHandler = null;
+                this.lastProcessedTimestamp = null;
+            }
+
+            startListening() {
+                if (this.isListening) {
+                    console.log('Already listening for RFID scans');
+                    return;
+                }
+
+                this.isListening = true;
+                console.log('Starting RFID listening...');
+
+                // Listen to the latest RFID scan
+                this.listener = database.ref('rfid_scans/latest').on('value', (snapshot) => {
+                    const scanData = snapshot.val();
+
+                    if (scanData && this.shouldProcessScan(scanData)) {
+                        console.log('New RFID scan detected:', scanData);
+                        this.processScan(scanData);
+                    }
+                });
+
+                // Also listen to new scans by timestamp
+                const currentTime = Date.now();
+                database.ref('rfid_scans')
+                    .orderByKey()
+                    .startAt(currentTime.toString())
+                    .on('child_added', (snapshot) => {
+                        const scanData = snapshot.val();
+                        const timestamp = snapshot.key;
+
+                        if (scanData && timestamp !== 'latest' && this.shouldProcessScan(scanData)) {
+                            console.log('New timestamped RFID scan:', scanData);
+                            this.processScan(scanData);
+                        }
                     });
-                }, 3000);
+            }
 
-                // In real implementation, you would integrate with actual RFID reader
-                // Example using Web Serial API or WebUSB for RFID readers
+            stopListening() {
+                if (!this.isListening) {
+                    return;
+                }
+
+                this.isListening = false;
+                console.log('Stopping RFID listening...');
+
+                if (this.listener) {
+                    database.ref('rfid_scans/latest').off('value', this.listener);
+                    database.ref('rfid_scans').off('child_added');
+                    this.listener = null;
+                }
+
+                this.clearTimeout();
+            }
+
+            shouldProcessScan(scanData) {
+                // Don't process if already processed
+                if (scanData.processed) {
+                    return false;
+                }
+
+                // Don't process if we've already processed this timestamp
+                if (this.lastProcessedTimestamp === scanData.timestamp) {
+                    return false;
+                }
+
+                // Don't process old scans (older than 5 seconds)
+                const currentTime = Date.now();
+                const scanTime = parseInt(scanData.timestamp);
+                if (currentTime - scanTime > 5000) {
+                    console.log('Ignoring old scan:', scanData);
+                    return false;
+                }
+
+                return true;
+            }
+
+            processScan(scanData) {
+                this.lastProcessedTimestamp = scanData.timestamp;
+
+                // Dispatch to Livewire dengan format yang benar
+                Livewire.dispatch('rfid-detected', {
+                    card_uid: scanData.card_uid,
+                    timestamp: scanData.timestamp,
+                    device_id: scanData.device_id || 'ESP32_RFID_STATION_01'
+                });
+
+                // Stop listening after successful scan
+                this.stopListening();
+            }
+
+            setTimeout(timeout) {
+                this.clearTimeout();
+
+                this.timeoutHandler = setTimeout(() => {
+                    console.log('RFID scan timeout');
+                    this.stopListening();
+                    Livewire.dispatch('rfid-timeout');
+                }, timeout);
+            }
+
+            clearTimeout() {
+                if (this.timeoutHandler) {
+                    clearTimeout(this.timeoutHandler);
+                    this.timeoutHandler = null;
+                }
+            }
+        }
+
+        // Initialize RFID Manager
+        const rfidManager = new RfidManager();
+
+        // Livewire Event Listeners
+        document.addEventListener('livewire:initialized', () => {
+            // Listen for start RFID reading command
+            Livewire.on('start-rfid-listening', () => {
+                rfidManager.startListening();
             });
 
-            Livewire.on('stop-rfid-reading', () => {
-                console.log('Stopping RFID reading...');
-                if (rfidInterval) {
-                    clearInterval(rfidInterval);
-                }
+            // Listen for stop RFID reading command
+            Livewire.on('stop-rfid-listening', () => {
+                rfidManager.stopListening();
+            });
+
+            // Listen for timeout setting
+            Livewire.on('set-rfid-timeout', (event) => {
+                rfidManager.setTimeout(event.timeout || 30000);
             });
         });
 
-        // Real RFID Implementation Example (uncomment when ready to use real RFID)
-        /*
-        async function initRFIDReader() {
-            try {
-                // Request serial port access
-                const port = await navigator.serial.requestPort();
-                await port.open({ baudRate: 9600 });
+        // Cleanup when page unloads
+        window.addEventListener('beforeunload', () => {
+            rfidManager.stopListening();
+        });
 
-                const reader = port.readable.getReader();
+        // Connection status monitoring
+        database.ref('.info/connected').on('value', (snapshot) => {
+            const connected = snapshot.val();
+            console.log('Firebase connection status:', connected ? 'Connected' : 'Disconnected');
 
-                while (true) {
-                    const { value, done } = await reader.read();
-                    if (done) break;
-
-                    // Parse RFID data from serial input
-                    const rfidData = new TextDecoder().decode(value).trim();
-                    if (rfidData) {
-                        Livewire.dispatch('rfid-detected', { rfidData: rfidData });
-                    }
-                }
-            } catch (error) {
-                console.error('RFID Reader Error:', error);
+            if (!connected && rfidManager.isListening) {
+                console.log('Firebase disconnected, stopping RFID listening');
+                rfidManager.stopListening();
+                Livewire.dispatch('rfid-error', {
+                    message: 'Connection lost. Please try again.'
+                });
             }
+        });
+
+        // Device status monitoring
+        function checkDeviceStatus() {
+            database.ref('devices/ESP32_RFID_STATION_01').once('value')
+                .then((snapshot) => {
+                    const device = snapshot.val();
+                    if (device) {
+                        const lastSeen = device.last_seen;
+                        const currentTime = Date.now();
+                        const isOnline = (currentTime - lastSeen) < 30000; // 30 seconds threshold
+
+                        console.log('Device status:', isOnline ? 'Online' : 'Offline');
+
+                        // You can dispatch this to Livewire if needed
+                        Livewire.dispatch('device-status-changed', {
+                            status: isOnline ? 'online' : 'offline'
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error checking device status:', error);
+                });
         }
-        */
+
+        // Check device status periodically
+        setInterval(checkDeviceStatus, 10000); // Every 10 seconds
+
+        // Error handling for Firebase
+        database.ref().on('error', (error) => {
+            console.error('Firebase error:', error);
+            if (rfidManager.isListening) {
+                rfidManager.stopListening();
+                Livewire.dispatch('rfid-error', {
+                    message: 'Database error. Please try again.'
+                });
+            }
+        });
     </script>
 @endpush
