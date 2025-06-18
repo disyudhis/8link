@@ -1,7 +1,7 @@
 <div>
     <div class="bg-gradient-to-r from-primary to-primary/80 text-black p-4 rounded-b-lg shadow-md">
         <div class="flex items-center">
-            <a href="{{ route('reservasi.show', $booking->id) }}" class="text-black hover:text-gray-800 transition-colors duration-300">
+            <a href="{{ route('user.reservasi.show', $booking->id) }}" class="text-black hover:text-gray-800 transition-colors duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
