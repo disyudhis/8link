@@ -101,7 +101,7 @@ class Checklist extends Component
             dd($e->getMessage());
             Log::error('Error loading vehicle inspection data: ' . $e->getMessage());
             session()->flash('error', 'Terjadi kesalahan saat memuat data. Silakan coba lagi.');
-            return redirect()->route('reservasi.index');
+            return redirect()->route('user.reservasi.index');
         }
     }
 
@@ -260,7 +260,7 @@ class Checklist extends Component
                 session()->flash('message', 'Inspeksi kendaraan berhasil disimpan');
 
                 // Redirect to booking details or next step
-                return redirect()->route('reservasi.show', $this->bookingId);
+                return redirect()->route('user.reservasi.show', $this->bookingId);
             } catch (\Exception $e) {
                 dd($e->getMessage());
                 \DB::rollBack();
