@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Worker extends Model
 {
-    protected $fillable = ['name', 'email', 'phone', 'specialization', 'rfid_tag', 'is_active', 'hire_date'];
+    protected $fillable = ['name', 'email', 'phone', 'rfid_tag', 'is_active', 'hire_date'];
 
     protected $casts = [
         'is_active' => 'boolean',

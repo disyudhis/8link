@@ -28,7 +28,7 @@ return new class extends Migration
             $table->unsignedBigInteger('assigned_worker_id')->nullable();
             $table->time('assigned_at')->nullable();
             $table->time('started_at')->nullable();
-            $table->time('completed_at')->nullable();
+            $table->datetime('completed_at')->nullable();
             $table->foreign('assigned_worker_id')->references('id')->on('workers')->onDelete('set null');
             $table->timestamps();
         });

@@ -39,7 +39,7 @@ class Reservasi extends Component
 
     public function loadBooking()
     {
-        $this->booking = Bookings::with(['customer', 'packagePrice.servicePackage'])->findOrFail($this->bookingId);
+        $this->booking = Bookings::with(['customer', 'packagePrice.servicePackage', 'assignedWorker'])->findOrFail($this->bookingId);
     }
 
     public function initializeChecklist()
@@ -160,9 +160,16 @@ class Reservasi extends Component
 
     public function getWhatsappUrl()
     {
-        $phone = '+6281332448868'; // In a real app, get from a technician or admin user
+        // Prioritas: worker yang assigned, lalu admin/technician default
+        $phone = '+6281332448868'; // Default admin phone
+        $recipientName = 'Admin';
 
-        $message = "Halo, saya {$this->booking->customer->name} pemilik {$this->booking->car_name} dengan nomor plat {$this->booking->license_plate}. Saya ingin menanyakan status pengerjaan mobil saya.";
+        if ($this->booking->assignedWorker && $this->booking->assignedWorker->phone) {
+            $phone = $this->booking->assignedWorker->phone;
+            $recipientName = $this->booking->assignedWorker->name;
+        }
+
+        $message = "Halo {$recipientName}, saya {$this->booking->customer->name} pemilik {$this->booking->car_name} dengan nomor plat {$this->booking->license_plate}. Saya ingin menanyakan status pengerjaan mobil saya.";
 
         return "https://wa.me/{$phone}?text=" . urlencode($message);
     }

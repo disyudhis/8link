@@ -23,6 +23,8 @@ class PengerjaanAdmin extends Component
     public $deviceStatus = 'unknown';
     public $lastRfidScan = null;
     public $deviceInfo = null;
+    public $showCompleteModal = false;
+    public $completionNotes = '';
 
     // Firebase configuration
     private $firebaseUrl = 'https://blink-reservation-default-rtdb.asia-southeast1.firebasedatabase.app/';
@@ -110,6 +112,18 @@ class PengerjaanAdmin extends Component
     {
         $this->showAssignModal = false;
         $this->stopRfidReading();
+    }
+
+    public function openCompleteModal()
+    {
+        $this->showCompleteModal = true;
+        $this->completionNotes = '';
+    }
+
+    public function closeCompleteModal()
+    {
+        $this->showCompleteModal = false;
+        $this->completionNotes = '';
     }
 
     public function startRfidReading()
@@ -237,7 +251,6 @@ class PengerjaanAdmin extends Component
                 ]);
             }
         } catch (\Exception $e) {
-            dd($e->getMessage());
             Log::error('RFID handling error', [
                 'error' => $e->getMessage(),
                 'card_uid' => $card_uid,
@@ -440,6 +453,31 @@ class PengerjaanAdmin extends Component
         } catch (\Exception $e) {
             Log::error('Start progress error: ' . $e->getMessage());
             session()->flash('error', 'Terjadi kesalahan saat memulai pengerjaan');
+        }
+    }
+
+    public function completeWork()
+    {
+        try {
+            $this->booking->update([
+                'status' => Bookings::STATUS_COMPLETED,
+                'completed_at' => now(),
+                'notes' => $this->booking->notes ? $this->booking->notes . "\n\nCatatan penyelesaian: " . $this->completionNotes : "Catatan penyelesaian: " . $this->completionNotes,
+            ]);
+
+            $this->loadBooking();
+            $this->closeCompleteModal();
+
+            session()->flash('success', 'Pengerjaan berhasil diselesaikan');
+
+            Log::info('Work completed successfully', [
+                'booking_id' => $this->booking->id,
+                'worker_id' => $this->booking->assigned_worker_id,
+                'completion_notes' => $this->completionNotes,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Complete work error: ' . $e->getMessage());
+            session()->flash('error', 'Terjadi kesalahan saat menyelesaikan pengerjaan');
         }
     }
 

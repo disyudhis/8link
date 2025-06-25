@@ -1,3 +1,4 @@
+{{-- Belum Diperbaiki --}}
 <div class="min-h-screen bg-gray-50">
     <!-- Header with Back Button -->
     <div class="bg-white shadow-sm border-b">
@@ -38,6 +39,62 @@
             {{ $booking->status_text }}
         </div>
     </div>
+
+    @if ($booking->assignedWorker)
+        <div class="mx-4 mb-4 bg-white rounded-xl shadow-sm border border-gray-100">
+            <div class="p-6">
+                <div class="flex items-start space-x-4">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">{{ $booking->assignedWorker->name }}</h3>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                                <span class="text-sm text-green-600 font-medium">Assigned</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 space-y-2">
+                            @if ($booking->assignedWorker->phone)
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">Telepon</span>
+                                    <span
+                                        class="text-sm font-medium text-gray-900">{{ $booking->assignedWorker->phone }}</span>
+                                </div>
+                            @endif
+
+                            @if ($booking->assigned_at)
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">Assigned At</span>
+                                    <span
+                                        class="text-sm font-medium text-gray-900">{{ $booking->updated_at->format('d M Y, H:i') }}</span>
+                                </div>
+                            @endif
+
+                            @if ($booking->completed_at)
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">Diselesaikan</span>
+                                    <span
+                                        class="text-sm font-medium text-green-700">{{ $booking->completed_at->format('d M Y, H:i') }}</span>
+                                </div>
+                                @if ($booking->duration)
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-500">Total Durasi</span>
+                                        <span class="text-sm font-medium text-gray-900">{{ $booking->duration }}</span>
+                                    </div>
+                                @endif
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <!-- Vehicle Information -->
     <div class="mx-4 mb-4 bg-white rounded-xl shadow-sm border border-gray-100">
@@ -114,7 +171,8 @@
                 <div class="flex-1">
                     <h3 class="text-lg font-semibold text-gray-900">{{ $booking->packagePrice->servicePackage->name }}
                     </h3>
-                    <p class="text-sm text-gray-500 mt-1">{{ $booking->packagePrice->servicePackage->description }}</p>
+                    <p class="text-sm text-gray-500 mt-1">{{ $booking->packagePrice->servicePackage->description }}
+                    </p>
                     <div class="mt-4 flex items-center justify-between">
                         <span class="text-sm text-gray-500">Kategori Kendaraan</span>
                         <span
@@ -161,6 +219,16 @@
                         clip-rule="evenodd"></path>
                 </svg>
                 <span>Mulai Pengerjaan</span>
+            </button>
+        @elseif($booking->status === 'in_progress')
+            <button wire:click="openCompleteModal"
+                class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-4 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center space-x-2">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span>Selesaikan Pekerjaan</span>
             </button>
         @endif
     </div>
@@ -227,8 +295,7 @@
                                         </div>
                                         <div>
                                             <p class="text-green-800 font-medium">{{ $assignedWorker->name }}</p>
-                                            <p class="text-green-600 text-sm">
-                                                {{ $assignedWorker->specialization ?? 'Pekerja' }}</p>
+
                                         </div>
                                     </div>
                                 </div>
@@ -264,7 +331,6 @@
                                         class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
                                     <div class="flex-1">
                                         <p class="font-medium text-gray-900">{{ $worker->name }}</p>
-                                        <p class="text-sm text-gray-500">{{ $worker->specialization ?? 'Pekerja' }}
                                         </p>
                                     </div>
                                 </div>
@@ -283,6 +349,99 @@
                         <button wire:click="assignWorker" {{ !$selectedWorker ? 'disabled' : '' }}
                             class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200">
                             Assign & Konfirmasi
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Complete Work Modal -->
+    @if ($showCompleteModal)
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end sm:items-center justify-center">
+            <div class="bg-white w-full max-w-md mx-4 rounded-t-3xl sm:rounded-xl max-h-[90vh] overflow-hidden">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between p-6 border-b">
+                    <h3 class="text-lg font-semibold text-gray-900">Selesaikan Pekerjaan</h3>
+                    <button wire:click="closeCompleteModal"
+                        class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="p-6">
+                    <!-- Booking Info -->
+                    <div class="mb-6 bg-gray-50 rounded-lg p-4">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">
+                                    {{ $booking->packagePrice->servicePackage->name }}</h4>
+                                <p class="text-sm text-gray-500">{{ $booking->car_name }} -
+                                    {{ $booking->license_plate }}</p>
+                            </div>
+                        </div>
+
+                        @if ($booking->assignedWorker)
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500">Pekerja:</span>
+                                <span class="font-medium text-gray-900">{{ $booking->assignedWorker->name }}</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Completion Notes -->
+                    <div class="mb-6">
+                        <label for="completionNotes" class="block text-sm font-medium text-gray-700 mb-2">
+                            Catatan Penyelesaian (Opsional)
+                        </label>
+                        <textarea wire:model="completionNotes" id="completionNotes" rows="4"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
+                            placeholder="Tambahkan catatan atau keterangan tambahan untuk penyelesaian pekerjaan ini..."></textarea>
+                    </div>
+
+                    <!-- Confirmation -->
+                    <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div class="flex items-start space-x-3">
+                            <svg class="w-5 h-5 text-green-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <h5 class="text-sm font-medium text-green-800">Konfirmasi Penyelesaian</h5>
+                                <p class="text-sm text-green-700 mt-1">
+                                    Pastikan semua pekerjaan telah selesai dikerjakan sesuai dengan paket layanan yang
+                                    dipilih.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="border-t p-6">
+                    <div class="flex space-x-3">
+                        <button wire:click="closeCompleteModal"
+                            class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors duration-200">
+                            Batal
+                        </button>
+                        <button wire:click="completeWork"
+                            class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Selesaikan Pekerjaan</span>
                         </button>
                     </div>
                 </div>
