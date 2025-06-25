@@ -361,6 +361,10 @@ class PengerjaanAdmin extends Component
                 'assigned_at' => now(),
             ]);
 
+            $worker->update( [
+                'is_active' => false,
+            ]);
+
             // Send feedback to Firebase/ESP32
             $this->sendAssignmentFeedback('success', $worker);
 
